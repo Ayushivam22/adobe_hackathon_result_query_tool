@@ -1,13 +1,18 @@
 {
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "api/adobe_hackathon_results.db"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "api/adobe_hackathon_results.db"
+      }
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "api/index.py"
     },
     {
       "handle": "filesystem"
