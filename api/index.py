@@ -11,10 +11,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, Response
 
-# Locate database
+# Locate database dynamically across local and serverless environments
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, "adobe_hackathon_results.db")
 PUBLIC_DIR = os.path.join(BASE_DIR, "public")
+
+def find_db_path():
+    candidate_paths = [
+        os.path.join(BASE_DIR, "adobe_hackathon_results.db"),
+        os.path.join(os.getcwd(), "adobe_hackathon_results.db"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "adobe_hackathon_results.db"),
+        "/var/task/adobe_hackathon_results.db"
+    ]
+    for path in candidate_paths:
+        if os.path.exists(path):
+            return path
+    return candidate_paths[0]
+
+DB_PATH = find_db_path()
 
 app = FastAPI(
     title="Adobe University Hackathon 2026 Results API",
@@ -33,7 +46,8 @@ app.add_middleware(
 
 def get_db():
     """Returns a read-only SQLite database connection."""
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+    db_file = find_db_path()
+    conn = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
     return conn
 
