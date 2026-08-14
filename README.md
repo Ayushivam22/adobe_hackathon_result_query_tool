@@ -1,6 +1,45 @@
 # Adobe University Hackathon 2026 Leaderboard Results & Query Tool
 
-This project provides an automated, resilient Python pipeline to fetch, parse, structure, and query all 26,760+ participants across 892 pages from the Adobe University Hackathon 2026 leaderboard API on Unstop.
+An automated, resilient Python pipeline to fetch, structure, query, and search all 78,043 participants across 892 pages from the Adobe University Hackathon 2026 leaderboard on Unstop — with both a **CLI Search Utility** and a **Web Search Application**.
+
+---
+
+## 🚀 Web Application (FastAPI + Modern UI)
+
+### Running Locally:
+```bash
+python app.py
+```
+Open **`http://127.0.0.1:8000`** in your browser.
+
+Features:
+- **Instant Search**: Type any name, teammate's name, team name, or university.
+- **Filter Pills**: Filter by Participant Name, Team Name, College, or Profile Handle.
+- **Quick Tags**: Instant 1-click filters for popular colleges (IITs, NITs, IIITs, BITS, VIT, SRM, DTU).
+- **Team Cards**: Displays full member list, roles (Leader/Member), college names, avatars, and direct links to Unstop profiles and leaderboard pages.
+- **Live Stats Bar**: Real-time participant, team, and university counters.
+
+---
+
+## 🌐 1-Click Deployment Guide
+
+### Deploying on Vercel (Recommended):
+1. Push this repository to GitHub:
+   ```bash
+   git add .
+   git commit -m "Add web search application and deployment config"
+   git push
+   ```
+2. Go to [vercel.com](https://vercel.com) and click **"Add New" > "Project"**.
+3. Import your GitHub repository.
+4. Click **"Deploy"** — Vercel will automatically read `vercel.json` and deploy both the serverless API and the frontend instantly.
+
+### Deploying on Render:
+1. Push your repository to GitHub.
+2. Go to [render.com](https://render.com) and create a **"New Web Service"**.
+3. Set **Build Command**: `pip install -r requirements.txt`
+4. Set **Start Command**: `uvicorn api.index:app --host 0.0.0.0 --port $PORT`
+5. Click **"Deploy"**.
 
 ---
 

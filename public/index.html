@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adobe University Hackathon 2026 - Leaderboard Result Finder</title>
+  <meta name="description" content="Instant search portal for 78,000+ participants and 26,700+ teams from the Adobe University Hackathon 2026 Leaderboard.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand-badge">
+        <span class="pulse-dot"></span>
+        <span>Round 1 - Online Assessment (MCQ + Coding)</span>
+      </div>
+      <h1 class="main-title">Adobe University Hackathon <span class="gradient-text">2026</span></h1>
+      <p class="subtitle">Search 78,043 participants across 892 leaderboard pages in milliseconds.</p>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+          <span class="stat-num" id="statTeams">26,760</span>
+          <span class="stat-label">Teams</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <span class="stat-num" id="statPlayers">78,043</span>
+          <span class="stat-label">Participants</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <span class="stat-num" id="statPages">892</span>
+          <span class="stat-label">Pages</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <span class="stat-num" id="statColleges">1,200+</span>
+          <span class="stat-label">Universities</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-box-wrapper">
+        <div class="search-input-container">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by your name, teammate's name, team name, or college..." 
+            autocomplete="off"
+            autofocus
+          >
+          <button id="clearSearchBtn" class="clear-btn hidden" title="Clear search">×</button>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="filter-pills" id="filterPills">
+          <button class="filter-pill active" data-filter="all">All Fields</button>
+          <button class="filter-pill" data-filter="name">Participant Name</button>
+          <button class="filter-pill" data-filter="team">Team Name</button>
+          <button class="filter-pill" data-filter="college">College / University</button>
+          <button class="filter-pill" data-filter="profile">Profile Handle</button>
+        </div>
+
+        <!-- Quick College Suggestions -->
+        <div class="quick-tags-container">
+          <span class="quick-label">Popular:</span>
+          <div class="quick-tags" id="quickTags">
+            <button class="tag-btn" data-query="IIT">IITs</button>
+            <button class="tag-btn" data-query="NIT">NITs</button>
+            <button class="tag-btn" data-query="IIIT">IIITs</button>
+            <button class="tag-btn" data-query="BITS">BITS Pilani</button>
+            <button class="tag-btn" data-query="VIT">VIT</button>
+            <button class="tag-btn" data-query="SRM">SRM</button>
+            <button class="tag-btn" data-query="DTU">DTU</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Header -->
+    <section class="results-header">
+      <div class="results-info">
+        <span id="resultsCountText">Showing all teams</span>
+        <span class="loading-spinner hidden" id="loadingSpinner"></span>
+      </div>
+      <div class="view-options">
+        <span id="pageInfoText" class="page-info-badge">Page 1</span>
+      </div>
+    </section>
+
+    <!-- Results Grid -->
+    <main class="results-grid" id="resultsGrid">
+      <!-- Dynamic Team Cards injected by app.js -->
+    </main>
+
+    <!-- Empty State -->
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <h3>No matching participants or teams found</h3>
+      <p>Try searching with a different spelling, partial name, or college name.</p>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="pagination-container" id="paginationContainer">
+      <button class="page-nav-btn" id="prevPageBtn" disabled>← Previous</button>
+      <div class="page-numbers" id="pageNumbers"></div>
+      <button class="page-nav-btn" id="nextPageBtn">Next →</button>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Adobe University Hackathon 2026 Result Query Tool • Powered by SQLite & FastAPI</p>
+      <p class="footer-sub">Data parsed directly from Unstop Official Leaderboard API</p>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
