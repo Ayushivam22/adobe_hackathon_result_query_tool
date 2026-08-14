@@ -20,6 +20,7 @@ def find_db_path():
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "adobe_hackathon_results.db"),
         os.path.join(BASE_DIR, "adobe_hackathon_results.db"),
         os.path.join(os.getcwd(), "adobe_hackathon_results.db"),
+        os.path.join(os.getcwd(), "api", "adobe_hackathon_results.db"),
         "/var/task/api/adobe_hackathon_results.db",
         "/var/task/adobe_hackathon_results.db"
     ]
@@ -31,7 +32,7 @@ def find_db_path():
 app = FastAPI(
     title="Adobe University Hackathon 2026 Results API",
     description="Search, query, and analyze 78,000+ hackathon participants and teams",
-    version="2.0.0"
+    version="2.1.0"
 )
 
 app.add_middleware(
@@ -47,7 +48,7 @@ def get_db():
     """Returns a read-only SQLite database connection."""
     db_file = find_db_path()
     if not os.path.exists(db_file):
-        raise HTTPException(status_code=500, detail=f"Database file not found: checked {db_file}")
+        raise HTTPException(status_code=500, detail=f"Database file not found. Checked: {db_file}")
     try:
         conn = sqlite3.connect(f"file:{os.path.abspath(db_file)}?mode=ro", uri=True)
     except Exception:
@@ -57,6 +58,7 @@ def get_db():
 
 
 @app.get("/api/stats")
+@app.get("/stats")
 def get_stats():
     """Returns overall summary statistics and top universities."""
     try:
@@ -103,6 +105,7 @@ def get_stats():
 
 
 @app.get("/api/search")
+@app.get("/search")
 def search_results(
     q: Optional[str] = None,
     filter_by: str = "all",
@@ -278,6 +281,7 @@ def search_results(
 
 
 @app.post("/api/sql")
+@app.post("/sql")
 def execute_sql(body: dict = Body(...)):
     """Executes arbitrary read-only SQL queries and returns column headers, rows, and execution time."""
     query = (body.get("query") or "").strip()
@@ -325,6 +329,7 @@ def execute_sql(body: dict = Body(...)):
 
 
 @app.get("/api/export")
+@app.get("/export")
 def export_data(
     format: str = "csv",
     q: Optional[str] = None,
@@ -417,17 +422,16 @@ def export_data(
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
-# Static Assets and Frontend UI Routes
+# Mount static assets
 if os.path.exists(PUBLIC_DIR):
     app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 
 @app.get("/")
 def serve_index():
-    """Serves the main Web UI index.html."""
     index_file = os.path.join(PUBLIC_DIR, "index.html")
     if os.path.exists(index_file):
-        return FileResponse(index_file, media_type="text/html")
-    return {"message": "Adobe Hackathon Results API is active."}
+        return FileResponse(index_file)
+    return {"message": "Adobe Hackathon Results API is running."}
 
 @app.get("/style.css")
 def serve_css_root():
