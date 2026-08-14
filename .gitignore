@@ -1,2 +1,4 @@
 .cache
 task.md
+__pycache__/
+*.pyc

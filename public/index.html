@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Adobe University Hackathon 2026 - Leaderboard Result Finder</title>
-  <meta name="description" content="Instant search portal for 78,000+ participants and 26,700+ teams from the Adobe University Hackathon 2026 Leaderboard.">
+  <title>Adobe University Hackathon 2026 - Result & Query Portal</title>
+  <meta name="description" content="Search and query 78,043 participants and 26,760 teams across 892 pages of Adobe University Hackathon 2026 with multi-field search and custom SQL console.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <!-- Ambient background glow effects -->
+  <!-- Ambient background lighting -->
   <div class="bg-glow bg-glow-1"></div>
   <div class="bg-glow bg-glow-2"></div>
 
@@ -20,10 +20,10 @@
     <header class="header">
       <div class="brand-badge">
         <span class="pulse-dot"></span>
-        <span>Round 1 - Online Assessment (MCQ + Coding)</span>
+        <span>Round 1 - Online Assessment (MCQ + Coding) Results</span>
       </div>
       <h1 class="main-title">Adobe University Hackathon <span class="gradient-text">2026</span></h1>
-      <p class="subtitle">Search 78,043 participants across 892 leaderboard pages in milliseconds.</p>
+      <p class="subtitle">Query and search 78,043 participants across 892 leaderboard pages in real-time.</p>
 
       <!-- Stats Bar -->
       <div class="stats-bar" id="statsBar">
@@ -38,19 +38,53 @@
         </div>
         <div class="stat-divider"></div>
         <div class="stat-card">
-          <span class="stat-num" id="statPages">892</span>
-          <span class="stat-label">Pages</span>
+          <span class="stat-num" id="statColleges">2,959</span>
+          <span class="stat-label">Colleges</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-card">
-          <span class="stat-num" id="statColleges">1,200+</span>
-          <span class="stat-label">Universities</span>
+          <span class="stat-num" id="statPages">892</span>
+          <span class="stat-label">Pages</span>
         </div>
       </div>
     </header>
 
-    <!-- Search Section -->
-    <section class="search-section">
+    <!-- Navigation Mode Tabs -->
+    <nav class="mode-tabs-container">
+      <div class="mode-tabs" id="modeTabs">
+        <button class="mode-tab active" data-tab="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Smart Search</span>
+        </button>
+        <button class="mode-tab" data-tab="multifilter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+          <span>Multi-Field Filter</span>
+        </button>
+        <button class="mode-tab" data-tab="sql">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <span>SQL Query Console</span>
+        </button>
+        <button class="mode-tab" data-tab="analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Top Colleges</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- TAB 1: Smart Search Pane -->
+    <section class="tab-pane active" id="paneSearch">
       <div class="search-box-wrapper">
         <div class="search-input-container">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -76,9 +110,9 @@
           <button class="filter-pill" data-filter="profile">Profile Handle</button>
         </div>
 
-        <!-- Quick College Suggestions -->
+        <!-- Quick Tags -->
         <div class="quick-tags-container">
-          <span class="quick-label">Popular:</span>
+          <span class="quick-label">Quick Tags:</span>
           <div class="quick-tags" id="quickTags">
             <button class="tag-btn" data-query="IIT">IITs</button>
             <button class="tag-btn" data-query="NIT">NITs</button>
@@ -87,40 +121,188 @@
             <button class="tag-btn" data-query="VIT">VIT</button>
             <button class="tag-btn" data-query="SRM">SRM</button>
             <button class="tag-btn" data-query="DTU">DTU</button>
+            <button class="tag-btn" data-query="TIET">Thapar</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Results Header -->
-    <section class="results-header">
-      <div class="results-info">
-        <span id="resultsCountText">Showing all teams</span>
-        <span class="loading-spinner hidden" id="loadingSpinner"></span>
-      </div>
-      <div class="view-options">
-        <span id="pageInfoText" class="page-info-badge">Page 1</span>
+    <!-- TAB 2: Multi-Field Query Pane -->
+    <section class="tab-pane" id="paneMultifilter">
+      <div class="multifilter-card">
+        <h2 class="pane-title">Combined Field Search (query.py options)</h2>
+        <p class="pane-subtitle">Specify any combination of filters to narrow down your search precisely.</p>
+
+        <form id="multiFilterForm" class="multifilter-grid">
+          <div class="form-group">
+            <label for="mfName"><span class="form-icon">👤</span> Participant Name (<code>--name</code>)</label>
+            <input type="text" id="mfName" placeholder="e.g. Aryan, Rishabh, Pooja">
+          </div>
+          <div class="form-group">
+            <label for="mfTeam"><span class="form-icon">🛡️</span> Team Name (<code>--team</code>)</label>
+            <input type="text" id="mfTeam" placeholder="e.g. Sabotage, 01Coders">
+          </div>
+          <div class="form-group">
+            <label for="mfCollege"><span class="form-icon">🎓</span> College / University (<code>--college</code>)</label>
+            <input type="text" id="mfCollege" placeholder="e.g. IIT Bombay, BITS, VIT">
+          </div>
+          <div class="form-group">
+            <label for="mfProfile"><span class="form-icon">🔗</span> Profile Username (<code>--profile</code>)</label>
+            <input type="text" id="mfProfile" placeholder="e.g. rishayad23586">
+          </div>
+          <div class="multifilter-actions">
+            <button type="submit" class="btn-primary" id="mfSubmitBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Search Results</span>
+            </button>
+            <button type="button" class="btn-secondary" id="mfResetBtn">Reset Fields</button>
+          </div>
+        </form>
       </div>
     </section>
 
-    <!-- Results Grid -->
-    <main class="results-grid" id="resultsGrid">
-      <!-- Dynamic Team Cards injected by app.js -->
-    </main>
+    <!-- TAB 3: SQL Query Console Pane -->
+    <section class="tab-pane" id="paneSql">
+      <div class="sql-console-card">
+        <div class="sql-header">
+          <div>
+            <h2 class="pane-title">SQL Query Console (<code>--sql</code> option)</h2>
+            <p class="pane-subtitle">Execute direct read-only SQL queries against the <code>players</code> and <code>teams</code> tables.</p>
+          </div>
+          <span class="sql-badge">SQLite 3.x</span>
+        </div>
 
-    <!-- Empty State -->
-    <div class="empty-state hidden" id="emptyState">
-      <div class="empty-icon">🔍</div>
-      <h3>No matching participants or teams found</h3>
-      <p>Try searching with a different spelling, partial name, or college name.</p>
+        <!-- SQL Templates -->
+        <div class="sql-templates">
+          <span class="templates-label">Query Presets:</span>
+          <button class="sql-preset-btn" data-sql="SELECT organisation, COUNT(*) as participants FROM players WHERE organisation != '' GROUP BY organisation ORDER BY participants DESC LIMIT 10;">🏆 Top 10 Colleges</button>
+          <button class="sql-preset-btn" data-sql="SELECT team_name, player_count, page FROM teams WHERE player_count = 3 ORDER BY page ASC LIMIT 15;">👥 3-Member Teams</button>
+          <button class="sql-preset-btn" data-sql="SELECT name, organisation, team_name, page FROM players WHERE name LIKE '%Kumar%' ORDER BY page ASC LIMIT 20;">🔍 Name Pattern Search</button>
+          <button class="sql-preset-btn" data-sql="SELECT name, organisation, profile_url FROM players WHERE player_type = 1 ORDER BY page ASC LIMIT 15;">👑 Team Leaders</button>
+          <button class="sql-preset-btn" data-sql="SELECT COUNT(DISTINCT organisation) as total_colleges, COUNT(*) as total_players FROM players;">📊 Overview Aggregates</button>
+        </div>
+
+        <div class="sql-editor-wrapper">
+          <textarea id="sqlInput" rows="4" spellcheck="false" placeholder="SELECT * FROM players WHERE name LIKE '%Aryan%' LIMIT 20;"></textarea>
+          <div class="sql-actions-bar">
+            <div class="sql-schema-hint">
+              Tables available: <code>players (name, organisation, team_name, role, page, profile_url)</code>, <code>teams (team_name, page, player_count, evaluated)</code>
+            </div>
+            <div class="sql-btn-group">
+              <button class="btn-primary" id="runSqlBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Run Query</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SQL Output Table -->
+        <div class="sql-results-container hidden" id="sqlResultsContainer">
+          <div class="sql-results-header">
+            <span id="sqlExecutionStatus">Results</span>
+            <button class="btn-export-small" id="exportSqlCsvBtn">📥 Export SQL Result (CSV)</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="sqlResultsTable">
+              <thead id="sqlTableHead"></thead>
+              <tbody id="sqlTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: University Analytics Pane -->
+    <section class="tab-pane" id="paneAnalytics">
+      <div class="analytics-card">
+        <h2 class="pane-title">Top Universities & Colleges Leaderboard</h2>
+        <p class="pane-subtitle">Highest participating educational institutions across all 78,043 entries.</p>
+        <div class="top-colleges-grid" id="topCollegesGrid">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEARCH & MULTI-FILTER RESULTS SECTION -->
+    <div id="resultsMainSection">
+      <!-- Results Controls Bar -->
+      <section class="results-header">
+        <div class="results-info">
+          <span id="resultsCountText">Showing results</span>
+          <span class="loading-spinner hidden" id="loadingSpinner"></span>
+        </div>
+        
+        <div class="results-actions">
+          <!-- View Switcher -->
+          <div class="view-switcher" id="viewSwitcher">
+            <button class="view-btn active" data-view="cards" title="Cards View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Cards</span>
+            </button>
+            <button class="view-btn" data-view="flat" title="Table View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Table</span>
+            </button>
+          </div>
+
+          <!-- Export Dropdown / Buttons -->
+          <div class="export-group">
+            <button class="btn-export" id="exportCsvBtn" title="Export matching results to CSV">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>CSV</span>
+            </button>
+            <button class="btn-export" id="exportJsonBtn" title="Export matching results to JSON">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>JSON</span>
+            </button>
+          </div>
+
+          <span id="pageInfoText" class="page-info-badge">Page 1</span>
+        </div>
+      </section>
+
+      <!-- View 1: Results Cards Grid -->
+      <main class="results-grid" id="resultsGrid">
+        <!-- Dynamic Team Cards injected by app.js -->
+      </main>
+
+      <!-- View 2: Results Table View -->
+      <div class="table-view-container hidden" id="tableViewContainer">
+        <div class="table-responsive">
+          <table class="data-table" id="flatDataTable">
+            <thead>
+              <tr>
+                <th>Page</th>
+                <th>Participant Name</th>
+                <th>Role</th>
+                <th>College / University</th>
+                <th>Team Name</th>
+                <th>Evaluation</th>
+                <th>Unstop Profile</th>
+              </tr>
+            </thead>
+            <tbody id="flatTableBody">
+              <!-- Injected by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">🔍</div>
+        <h3>No matching participants or teams found</h3>
+        <p>Try searching with a different spelling, partial name, or college name.</p>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="pagination-container" id="paginationContainer">
+        <button class="page-nav-btn" id="prevPageBtn" disabled>← Previous</button>
+        <div class="page-numbers" id="pageNumbers"></div>
+        <button class="page-nav-btn" id="nextPageBtn">Next →</button>
+      </nav>
     </div>
-
-    <!-- Pagination -->
-    <nav class="pagination-container" id="paginationContainer">
-      <button class="page-nav-btn" id="prevPageBtn" disabled>← Previous</button>
-      <div class="page-numbers" id="pageNumbers"></div>
-      <button class="page-nav-btn" id="nextPageBtn">Next →</button>
-    </nav>
 
     <!-- Footer -->
     <footer class="footer">
