@@ -17,17 +17,16 @@ PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
 def find_db_path():
     candidate_paths = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "adobe_hackathon_results.db"),
         os.path.join(BASE_DIR, "adobe_hackathon_results.db"),
         os.path.join(os.getcwd(), "adobe_hackathon_results.db"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "adobe_hackathon_results.db"),
+        "/var/task/api/adobe_hackathon_results.db",
         "/var/task/adobe_hackathon_results.db"
     ]
     for path in candidate_paths:
         if os.path.exists(path):
             return path
     return candidate_paths[0]
-
-DB_PATH = find_db_path()
 
 app = FastAPI(
     title="Adobe University Hackathon 2026 Results API",
@@ -47,7 +46,12 @@ app.add_middleware(
 def get_db():
     """Returns a read-only SQLite database connection."""
     db_file = find_db_path()
-    conn = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
+    if not os.path.exists(db_file):
+        raise HTTPException(status_code=500, detail=f"Database file not found: checked {db_file}")
+    try:
+        conn = sqlite3.connect(f"file:{os.path.abspath(db_file)}?mode=ro", uri=True)
+    except Exception:
+        conn = sqlite3.connect(db_file)
     conn.row_factory = sqlite3.Row
     return conn
 
