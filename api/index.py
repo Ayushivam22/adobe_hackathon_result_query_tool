@@ -101,7 +101,24 @@ def get_stats():
             "top_colleges": top_colleges
         }
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return JSONResponse(status_code=500, content={"error": str(e), "db_path_checked": find_db_path()})
+
+
+@app.get("/debug-paths")
+@app.get("/api/debug-paths")
+def debug_paths():
+    """Debug endpoint to diagnose file structure and DB location on Vercel."""
+    cwd = os.getcwd()
+    api_dir = os.path.join(cwd, "api")
+    return {
+        "cwd": cwd,
+        "files_in_cwd": os.listdir(cwd) if os.path.exists(cwd) else [],
+        "files_in_api": os.listdir(api_dir) if os.path.exists(api_dir) else [],
+        "find_db_path_result": find_db_path(),
+        "find_db_path_exists": os.path.exists(find_db_path()),
+        "db_root_exists": os.path.exists(os.path.join(cwd, "adobe_hackathon_results.db")),
+        "db_api_exists": os.path.exists(os.path.join(api_dir, "adobe_hackathon_results.db")),
+    }
 
 
 @app.get("/api/search")
